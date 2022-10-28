@@ -22,6 +22,7 @@
 
 #include <thrift/transport/TNonblockingServerTransport.h>
 #include <thrift/transport/PlatformSocket.h>
+#include <thrift/stdcxx.h>
 
 namespace apache {
 namespace thrift {
@@ -36,7 +37,7 @@ class TSocket;
  */
 class TNonblockingServerSocket : public TNonblockingServerTransport {
 public:
-  typedef std::function<void(THRIFT_SOCKET fd)> socket_func_t;
+  typedef apache::thrift::stdcxx::function<void(THRIFT_SOCKET fd)> socket_func_t;
 
   const static int DEFAULT_BACKLOG = 1024;
 
@@ -71,7 +72,7 @@ public:
    */
   TNonblockingServerSocket(const std::string& path);
 
-  ~TNonblockingServerSocket() override;
+  virtual ~TNonblockingServerSocket();
 
   void setSendTimeout(int sendTimeout);
   void setRecvTimeout(int recvTimeout);
@@ -97,18 +98,18 @@ public:
   // socket, this is the place to do it.
   void setAcceptCallback(const socket_func_t& acceptCallback) { acceptCallback_ = acceptCallback; }
 
-  THRIFT_SOCKET getSocketFD() override { return serverSocket_; }
+  THRIFT_SOCKET getSocketFD() { return serverSocket_; }
 
-  int getPort() override;
+  int getPort();
   
-  int getListenPort() override;
+  int getListenPort();
 
-  void listen() override;
-  void close() override;
+  void listen();
+  void close();
 
 protected:
-  std::shared_ptr<TSocket> acceptImpl() override;
-  virtual std::shared_ptr<TSocket> createSocket(THRIFT_SOCKET client);
+  apache::thrift::stdcxx::shared_ptr<TSocket> acceptImpl();
+  virtual apache::thrift::stdcxx::shared_ptr<TSocket> createSocket(THRIFT_SOCKET client);
 
 private:
   int port_;

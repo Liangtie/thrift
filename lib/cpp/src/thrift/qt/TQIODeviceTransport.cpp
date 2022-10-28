@@ -23,12 +23,12 @@
 #include <QIODevice>
 
 #include <thrift/transport/TBufferTransports.h>
-#include <memory>
+#include <thrift/stdcxx.h>
 
 namespace apache {
 namespace thrift {
 
-using std::shared_ptr;
+using stdcxx::shared_ptr;
 
 namespace transport {
 
@@ -46,7 +46,7 @@ void TQIODeviceTransport::open() {
   }
 }
 
-bool TQIODeviceTransport::isOpen() const {
+bool TQIODeviceTransport::isOpen() {
   return dev_->isOpen();
 }
 
@@ -157,7 +157,7 @@ void TQIODeviceTransport::flush() {
 uint8_t* TQIODeviceTransport::borrow(uint8_t* buf, uint32_t* len) {
   (void)buf;
   (void)len;
-  return nullptr;
+  return NULL;
 }
 
 void TQIODeviceTransport::consume(uint32_t len) {

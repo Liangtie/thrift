@@ -63,16 +63,16 @@ public:
   virtual ~TPipe();
 
   // Returns whether the pipe is open & valid.
-  bool isOpen() const override;
+  virtual bool isOpen();
 
   // Checks whether more data is available in the pipe.
-  bool peek() override;
+  virtual bool peek();
 
   // Creates and opens the named/anonymous pipe.
-  void open() override;
+  virtual void open();
 
   // Shuts down communications on the pipe.
-  void close() override;
+  virtual void close();
 
   // Reads from the pipe.
   virtual uint32_t read(uint8_t* buf, uint32_t len);
@@ -95,7 +95,7 @@ public:
   HANDLE getNativeWaitHandle();
 
 private:
-  std::shared_ptr<TPipeImpl> impl_;
+  stdcxx::shared_ptr<TPipeImpl> impl_;
 
   std::string pipename_;
 

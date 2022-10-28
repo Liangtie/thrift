@@ -18,8 +18,8 @@
  */
 
 #include <string>
-#include <memory>
-#include <thrift/concurrency/ThreadFactory.h>
+#include <thrift/stdcxx.h>
+#include <thrift/concurrency/PlatformThreadFactory.h>
 #include <thrift/server/TThreadedServer.h>
 
 namespace apache {
@@ -32,8 +32,8 @@ using apache::thrift::concurrency::Thread;
 using apache::thrift::concurrency::ThreadFactory;
 using apache::thrift::protocol::TProtocol;
 using apache::thrift::protocol::TProtocolFactory;
-using std::make_shared;
-using std::shared_ptr;
+using apache::thrift::stdcxx::make_shared;
+using apache::thrift::stdcxx::shared_ptr;
 using apache::thrift::transport::TServerTransport;
 using apache::thrift::transport::TTransport;
 using apache::thrift::transport::TTransportException;
@@ -89,7 +89,8 @@ TThreadedServer::TThreadedServer(const shared_ptr<TProcessor>& processor,
     threadFactory_(threadFactory) {
 }
 
-TThreadedServer::~TThreadedServer() = default;
+TThreadedServer::~TThreadedServer() {
+}
 
 void TThreadedServer::serve() {
   TServerFramework::serve();
@@ -106,7 +107,7 @@ void TThreadedServer::serve() {
 void TThreadedServer::drainDeadClients() {
   // we're in a monitor here
   while (!deadClientMap_.empty()) {
-    auto it = deadClientMap_.begin();
+    ClientMap::iterator it = deadClientMap_.begin();
     it->second->join();
     deadClientMap_.erase(it);
   }
@@ -124,9 +125,9 @@ void TThreadedServer::onClientConnected(const shared_ptr<TConnectedClient>& pCli
 void TThreadedServer::onClientDisconnected(TConnectedClient* pClient) {
   Synchronized sync(clientMonitor_);
   drainDeadClients(); // use the outgoing thread to do some maintenance on our dead client backlog
-  auto it = activeClientMap_.find(pClient);
+  ClientMap::iterator it = activeClientMap_.find(pClient);
   if (it != activeClientMap_.end()) {
-    auto end = it;
+    ClientMap::iterator end = it;
     deadClientMap_.insert(it, ++end);
     activeClientMap_.erase(it);
   }
@@ -139,7 +140,8 @@ TThreadedServer::TConnectedClientRunner::TConnectedClientRunner(const shared_ptr
   : pClient_(pClient) {
 }
 
-TThreadedServer::TConnectedClientRunner::~TConnectedClientRunner() = default;
+TThreadedServer::TConnectedClientRunner::~TConnectedClientRunner() {
+}
 
 void TThreadedServer::TConnectedClientRunner::run() /* override */ {
   pClient_->run();  // Run the client

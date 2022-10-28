@@ -22,6 +22,7 @@
 
 #include <thrift/transport/TTransport.h>
 #include <thrift/transport/TTransportException.h>
+#include <thrift/stdcxx.h>
 
 namespace apache {
 namespace thrift {
@@ -35,7 +36,7 @@ namespace transport {
  */
 class TServerTransport {
 public:
-  virtual ~TServerTransport() = default;
+  virtual ~TServerTransport() {}
 
   /**
    * Starts the server transport listening for new connections. Prior to this
@@ -55,8 +56,8 @@ public:
    * @return A new TTransport object
    * @throws TTransportException if there is an error
    */
-  std::shared_ptr<TTransport> accept() {
-    std::shared_ptr<TTransport> result = acceptImpl();
+  stdcxx::shared_ptr<TTransport> accept() {
+    stdcxx::shared_ptr<TTransport> result = acceptImpl();
     if (!result) {
       throw TTransportException("accept() may not return NULL");
     }
@@ -96,7 +97,7 @@ public:
   virtual void close() = 0;
 
 protected:
-  TServerTransport() = default;
+  TServerTransport() {}
 
   /**
    * Subclasses should implement this function for accept.
@@ -104,7 +105,7 @@ protected:
    * @return A newly allocated TTransport object
    * @throw TTransportException If an error occurs
    */
-  virtual std::shared_ptr<TTransport> acceptImpl() = 0;
+  virtual stdcxx::shared_ptr<TTransport> acceptImpl() = 0;
 };
 }
 }

@@ -34,6 +34,7 @@
 #endif
 
 #include <boost/scoped_array.hpp>
+#include <thrift/stdcxx.h>
 
 #include <thrift/protocol/TProtocolTypes.h>
 #include <thrift/transport/TBufferTransports.h>
@@ -74,7 +75,7 @@ public:
   static const int THRIFT_MAX_VARINT32_BYTES = 5;
 
   /// Use default buffer sizes.
-  explicit THeaderTransport(const std::shared_ptr<TTransport>& transport)
+  explicit THeaderTransport(const stdcxx::shared_ptr<TTransport>& transport)
     : TVirtualTransport(transport),
       outTransport_(transport),
       protoId(T_COMPACT_PROTOCOL),
@@ -82,13 +83,13 @@ public:
       seqId(0),
       flags(0),
       tBufSize_(0),
-      tBuf_(nullptr) {
+      tBuf_(NULL) {
     if (!transport_) throw std::invalid_argument("transport is empty");
     initBuffers();
   }
 
-  THeaderTransport(const std::shared_ptr<TTransport> inTransport,
-                   const std::shared_ptr<TTransport> outTransport)
+  THeaderTransport(const stdcxx::shared_ptr<TTransport> inTransport,
+                   const stdcxx::shared_ptr<TTransport> outTransport)
     : TVirtualTransport(inTransport),
       outTransport_(outTransport),
       protoId(T_COMPACT_PROTOCOL),
@@ -96,14 +97,14 @@ public:
       seqId(0),
       flags(0),
       tBufSize_(0),
-      tBuf_(nullptr) {
+      tBuf_(NULL) {
     if (!transport_) throw std::invalid_argument("inTransport is empty");
     if (!outTransport_) throw std::invalid_argument("outTransport is empty");
     initBuffers();
   }
 
-  uint32_t readSlow(uint8_t* buf, uint32_t len) override;
-  void flush() override;
+  virtual uint32_t readSlow(uint8_t* buf, uint32_t len);
+  virtual void flush();
 
   void resizeTransformBuffer(uint32_t additionalSize = 0);
 
@@ -175,17 +176,17 @@ protected:
    * Returns true if a frame was read successfully, or false on EOF.
    * (Raises a TTransportException if EOF occurs after a partial frame.)
    */
-  bool readFrame() override;
+  virtual bool readFrame();
 
   void ensureReadBuffer(uint32_t sz);
   uint32_t getWriteBytes();
 
   void initBuffers() {
-    setReadBuffer(nullptr, 0);
+    setReadBuffer(NULL, 0);
     setWriteBuffer(wBuf_.get(), wBufSize_);
   }
 
-  std::shared_ptr<TTransport> outTransport_;
+  stdcxx::shared_ptr<TTransport> outTransport_;
 
   // 0 and 16th bits must be 0 to differentiate from framed & unframed
   static const uint32_t HEADER_MAGIC = 0x0FFF0000;
@@ -257,15 +258,15 @@ protected:
  */
 class THeaderTransportFactory : public TTransportFactory {
 public:
-  THeaderTransportFactory() = default;
+  THeaderTransportFactory() {}
 
-  ~THeaderTransportFactory() override = default;
+  virtual ~THeaderTransportFactory() {}
 
   /**
    * Wraps the transport into a header one.
    */
-  std::shared_ptr<TTransport> getTransport(std::shared_ptr<TTransport> trans) override {
-    return std::shared_ptr<TTransport>(new THeaderTransport(trans));
+  virtual stdcxx::shared_ptr<TTransport> getTransport(stdcxx::shared_ptr<TTransport> trans) {
+    return stdcxx::shared_ptr<TTransport>(new THeaderTransport(trans));
   }
 };
 }

@@ -20,7 +20,7 @@
 #ifndef _THRIFT_ASYNC_TQIODEVICE_TRANSPORT_H_
 #define _THRIFT_ASYNC_TQIODEVICE_TRANSPORT_H_ 1
 
-#include <memory>
+#include <thrift/stdcxx.h>
 
 #include <thrift/transport/TVirtualTransport.h>
 
@@ -36,13 +36,13 @@ namespace transport {
 class TQIODeviceTransport
     : public apache::thrift::transport::TVirtualTransport<TQIODeviceTransport> {
 public:
-  explicit TQIODeviceTransport(std::shared_ptr<QIODevice> dev);
-  ~TQIODeviceTransport() override;
+  explicit TQIODeviceTransport(stdcxx::shared_ptr<QIODevice> dev);
+  virtual ~TQIODeviceTransport();
 
-  void open() override;
-  bool isOpen() const override;
-  bool peek() override;
-  void close() override;
+  void open();
+  bool isOpen();
+  bool peek();
+  void close();
 
   uint32_t readAll(uint8_t* buf, uint32_t len);
   uint32_t read(uint8_t* buf, uint32_t len);
@@ -50,7 +50,7 @@ public:
   void write(const uint8_t* buf, uint32_t len);
   uint32_t write_partial(const uint8_t* buf, uint32_t len);
 
-  void flush() override;
+  void flush();
 
   uint8_t* borrow(uint8_t* buf, uint32_t* len);
   void consume(uint32_t len);
@@ -59,7 +59,7 @@ private:
   TQIODeviceTransport(const TQIODeviceTransport&);
   TQIODeviceTransport& operator=(const TQIODeviceTransport&);
 
-  std::shared_ptr<QIODevice> dev_;
+  stdcxx::shared_ptr<QIODevice> dev_;
 };
 }
 }

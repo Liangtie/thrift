@@ -21,7 +21,6 @@
 
 #include <algorithm>
 #include <iostream>
-#include <memory>
 #if __cplusplus >= 201703L
 #include <random>
 #endif
@@ -36,7 +35,7 @@ namespace apache {
 namespace thrift {
 namespace transport {
 
-using std::shared_ptr;
+using stdcxx::shared_ptr;
 
 /**
  * TSocketPoolServer implementation
@@ -95,8 +94,8 @@ TSocketPool::TSocketPool(const vector<pair<string, int> >& servers)
     maxConsecutiveFailures_(1),
     randomize_(true),
     alwaysTryLast_(true) {
-  for (const auto & server : servers) {
-    addServer(server.first, server.second);
+  for (unsigned i = 0; i < servers.size(); ++i) {
+    addServer(servers[i].first, servers[i].second);
   }
 }
 
@@ -130,7 +129,7 @@ TSocketPool::~TSocketPool() {
 }
 
 void TSocketPool::addServer(const string& host, int port) {
-  servers_.push_back(std::make_shared<TSocketPoolServer>(host, port));
+  servers_.push_back(shared_ptr<TSocketPoolServer>(new TSocketPoolServer(host, port)));
 }
 
 void TSocketPool::addServer(shared_ptr<TSocketPoolServer>& server) {
@@ -217,7 +216,7 @@ void TSocketPool::open() {
 
     if (server->lastFailTime_ > 0) {
       // The server was marked as down, so check if enough time has elapsed to retry
-      time_t elapsedTime = time(nullptr) - server->lastFailTime_;
+      time_t elapsedTime = time(NULL) - server->lastFailTime_;
       if (elapsedTime > retryInterval_) {
         retryIntervalPassed = true;
       }
@@ -246,7 +245,7 @@ void TSocketPool::open() {
       if (server->consecutiveFailures_ > maxConsecutiveFailures_) {
         // Mark server as down
         server->consecutiveFailures_ = 0;
-        server->lastFailTime_ = time(nullptr);
+        server->lastFailTime_ = time(NULL);
       }
     }
   }

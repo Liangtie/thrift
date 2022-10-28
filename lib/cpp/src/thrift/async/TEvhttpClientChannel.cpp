@@ -41,15 +41,15 @@ TEvhttpClientChannel::TEvhttpClientChannel(const std::string& host,
                                            struct event_base* eb,
                                            struct evdns_base* dnsbase)
 
-  : host_(host), path_(path), conn_(nullptr) {
+  : host_(host), path_(path), conn_(NULL) {
   conn_ = evhttp_connection_base_new(eb, dnsbase, address, port);
-  if (conn_ == nullptr) {
+  if (conn_ == NULL) {
     throw TException("evhttp_connection_new failed");
   }
 }
 
 TEvhttpClientChannel::~TEvhttpClientChannel() {
-  if (conn_ != nullptr) {
+  if (conn_ != NULL) {
     evhttp_connection_free(conn_);
   }
 }
@@ -58,7 +58,7 @@ void TEvhttpClientChannel::sendAndRecvMessage(const VoidCallback& cob,
                                               apache::thrift::transport::TMemoryBuffer* sendBuf,
                                               apache::thrift::transport::TMemoryBuffer* recvBuf) {
   struct evhttp_request* req = evhttp_request_new(response, this);
-  if (req == nullptr) {
+  if (req == NULL) {
     throw TException("evhttp_request_new failed");
   }
 
@@ -110,7 +110,7 @@ void TEvhttpClientChannel::finish(struct evhttp_request* req) {
   assert(!completionQueue_.empty());
   Completion completion = completionQueue_.front();
   completionQueue_.pop();
-  if (req == nullptr) {
+  if (req == NULL) {
     try {
       completion.first();
     } catch (const TTransportException& e) {
@@ -142,7 +142,7 @@ void TEvhttpClientChannel::finish(struct evhttp_request* req) {
 }
 
 /* static */ void TEvhttpClientChannel::response(struct evhttp_request* req, void* arg) {
-  auto* self = (TEvhttpClientChannel*)arg;
+  TEvhttpClientChannel* self = (TEvhttpClientChannel*)arg;
   try {
     self->finish(req);
   } catch (std::exception& e) {

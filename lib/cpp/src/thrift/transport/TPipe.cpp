@@ -254,7 +254,7 @@ TPipe::~TPipe() {
 //---------------------------------------------------------
 // Transport callbacks
 //---------------------------------------------------------
-bool TPipe::isOpen() const {
+bool TPipe::isOpen() {
   return impl_.get() != NULL;
 }
 

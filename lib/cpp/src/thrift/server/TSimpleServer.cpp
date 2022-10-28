@@ -29,7 +29,7 @@ using apache::thrift::transport::TServerTransport;
 using apache::thrift::transport::TTransport;
 using apache::thrift::transport::TTransportException;
 using apache::thrift::transport::TTransportFactory;
-using std::shared_ptr;
+using stdcxx::shared_ptr;
 using std::string;
 
 TSimpleServer::TSimpleServer(const shared_ptr<TProcessorFactory>& processorFactory,
@@ -78,7 +78,8 @@ TSimpleServer::TSimpleServer(const shared_ptr<TProcessor>& processor,
   TServerFramework::setConcurrentClientLimit(1);
 }
 
-TSimpleServer::~TSimpleServer() = default;
+TSimpleServer::~TSimpleServer() {
+}
 
 /**
  * The main body of customized implementation for TSimpleServer is quite simple:

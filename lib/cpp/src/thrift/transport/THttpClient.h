@@ -28,20 +28,20 @@ namespace transport {
 
 class THttpClient : public THttpTransport {
 public:
-  THttpClient(std::shared_ptr<TTransport> transport, std::string host, std::string path = "");
+  THttpClient(stdcxx::shared_ptr<TTransport> transport, std::string host, std::string path = "");
 
   THttpClient(std::string host, int port, std::string path = "");
 
-  ~THttpClient() override;
+  virtual ~THttpClient();
 
-  void flush() override;
+  virtual void flush();
 
 protected:
   std::string host_;
   std::string path_;
 
-  void parseHeader(char* header) override;
-  bool parseStatusLine(char* status) override;
+  virtual void parseHeader(char* header);
+  virtual bool parseStatusLine(char* status);
 };
 }
 }

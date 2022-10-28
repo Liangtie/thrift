@@ -28,16 +28,16 @@ namespace transport {
 
 class THttpServer : public THttpTransport {
 public:
-  THttpServer(std::shared_ptr<TTransport> transport);
+  THttpServer(stdcxx::shared_ptr<TTransport> transport);
 
-  ~THttpServer() override;
+  virtual ~THttpServer();
 
-  void flush() override;
+  virtual void flush();
 
 protected:
   void readHeaders();
-  void parseHeader(char* header) override;
-  bool parseStatusLine(char* status) override;
+  virtual void parseHeader(char* header);
+  virtual bool parseStatusLine(char* status);
   std::string getTimeRFC1123();
 };
 
@@ -46,15 +46,15 @@ protected:
  */
 class THttpServerTransportFactory : public TTransportFactory {
 public:
-  THttpServerTransportFactory() = default;
+  THttpServerTransportFactory() {}
 
-  ~THttpServerTransportFactory() override = default;
+  virtual ~THttpServerTransportFactory() {}
 
   /**
    * Wraps the transport into a buffered one.
    */
-  std::shared_ptr<TTransport> getTransport(std::shared_ptr<TTransport> trans) override {
-    return std::shared_ptr<TTransport>(new THttpServer(trans));
+  virtual stdcxx::shared_ptr<TTransport> getTransport(stdcxx::shared_ptr<TTransport> trans) {
+    return stdcxx::shared_ptr<TTransport>(new THttpServer(trans));
   }
 };
 }

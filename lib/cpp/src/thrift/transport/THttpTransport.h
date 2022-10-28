@@ -36,30 +36,30 @@ namespace transport {
  */
 class THttpTransport : public TVirtualTransport<THttpTransport> {
 public:
-  THttpTransport(std::shared_ptr<TTransport> transport);
+  THttpTransport(stdcxx::shared_ptr<TTransport> transport);
 
-  ~THttpTransport() override;
+  virtual ~THttpTransport();
 
-  void open() override { transport_->open(); }
+  void open() { transport_->open(); }
 
-  bool isOpen() const override { return transport_->isOpen(); }
+  bool isOpen() { return transport_->isOpen(); }
 
-  bool peek() override { return transport_->peek(); }
+  bool peek() { return transport_->peek(); }
 
-  void close() override { transport_->close(); }
+  void close() { transport_->close(); }
 
   uint32_t read(uint8_t* buf, uint32_t len);
 
-  uint32_t readEnd() override;
+  uint32_t readEnd();
 
   void write(const uint8_t* buf, uint32_t len);
 
-  void flush() override = 0;
+  virtual void flush() = 0;
 
-  const std::string getOrigin() const override;
+  virtual const std::string getOrigin();
 
 protected:
-  std::shared_ptr<TTransport> transport_;
+  stdcxx::shared_ptr<TTransport> transport_;
   std::string origin_;
 
   TMemoryBuffer writeBuffer_;

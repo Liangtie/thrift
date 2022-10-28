@@ -21,7 +21,7 @@
 #define _THRIFT_TASYNCPROCESSOR_H_ 1
 
 #include <thrift/protocol/TProtocol.h>
-#include <memory>
+#include <thrift/stdcxx.h>
 #include <thrift/TProcessor.h>
 
 namespace apache {
@@ -35,32 +35,32 @@ namespace async {
 
 class TAsyncProcessor {
 public:
-  virtual ~TAsyncProcessor() = default;
+  virtual ~TAsyncProcessor() {}
 
-  virtual void process(std::function<void(bool success)> _return,
-                       std::shared_ptr<protocol::TProtocol> in,
-                       std::shared_ptr<protocol::TProtocol> out) = 0;
+  virtual void process(stdcxx::function<void(bool success)> _return,
+                       stdcxx::shared_ptr<protocol::TProtocol> in,
+                       stdcxx::shared_ptr<protocol::TProtocol> out) = 0;
 
-  void process(std::function<void(bool success)> _return,
-               std::shared_ptr<protocol::TProtocol> io) {
+  void process(stdcxx::function<void(bool success)> _return,
+               stdcxx::shared_ptr<protocol::TProtocol> io) {
     return process(_return, io, io);
   }
 
-  std::shared_ptr<TProcessorEventHandler> getEventHandler() const { return eventHandler_; }
+  stdcxx::shared_ptr<TProcessorEventHandler> getEventHandler() const { return eventHandler_; }
 
-  void setEventHandler(std::shared_ptr<TProcessorEventHandler> eventHandler) {
+  void setEventHandler(stdcxx::shared_ptr<TProcessorEventHandler> eventHandler) {
     eventHandler_ = eventHandler;
   }
 
 protected:
-  TAsyncProcessor() = default;
+  TAsyncProcessor() {}
 
-  std::shared_ptr<TProcessorEventHandler> eventHandler_;
+  stdcxx::shared_ptr<TProcessorEventHandler> eventHandler_;
 };
 
 class TAsyncProcessorFactory {
 public:
-  virtual ~TAsyncProcessorFactory() = default;
+  virtual ~TAsyncProcessorFactory() {}
 
   /**
    * Get the TAsyncProcessor to use for a particular connection.
@@ -69,7 +69,7 @@ public:
    * accepted on.  This generally means that this call does not need to be
    * thread safe, as it will always be invoked from a single thread.
    */
-  virtual std::shared_ptr<TAsyncProcessor> getProcessor(const TConnectionInfo& connInfo) = 0;
+  virtual stdcxx::shared_ptr<TAsyncProcessor> getProcessor(const TConnectionInfo& connInfo) = 0;
 };
 }
 }

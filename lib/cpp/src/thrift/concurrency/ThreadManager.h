@@ -20,9 +20,9 @@
 #ifndef _THRIFT_CONCURRENCY_THREADMANAGER_H_
 #define _THRIFT_CONCURRENCY_THREADMANAGER_H_ 1
 
-#include <functional>
-#include <memory>
-#include <thrift/concurrency/ThreadFactory.h>
+#include <sys/types.h>
+#include <thrift/concurrency/Thread.h>
+#include <thrift/stdcxx.h>
 
 namespace apache {
 namespace thrift {
@@ -55,12 +55,12 @@ class ThreadManager;
 class ThreadManager {
 
 protected:
-  ThreadManager() = default;
+  ThreadManager() {}
 
 public:
-  typedef std::function<void(std::shared_ptr<Runnable>)> ExpireCallback;
+  typedef apache::thrift::stdcxx::function<void(stdcxx::shared_ptr<Runnable>)> ExpireCallback;
 
-  virtual ~ThreadManager() = default;
+  virtual ~ThreadManager() {}
 
   /**
    * Starts the thread manager. Verifies all attributes have been properly
@@ -87,14 +87,14 @@ public:
   /**
    * \returns the current thread factory
    */
-  virtual std::shared_ptr<ThreadFactory> threadFactory() const = 0;
+  virtual stdcxx::shared_ptr<ThreadFactory> threadFactory() const = 0;
 
   /**
    * Set the thread factory.
    * \throws InvalidArgumentException if the new thread factory has a different
    *                                  detached disposition than the one replacing it
    */
-  virtual void threadFactory(std::shared_ptr<ThreadFactory> value) = 0;
+  virtual void threadFactory(stdcxx::shared_ptr<ThreadFactory> value) = 0;
 
   /**
    * Adds worker thread(s).
@@ -140,7 +140,7 @@ public:
    * Gets the number of tasks which have been expired without being run
    * since start() was called.
    */
-  virtual size_t expiredTaskCount() const = 0;
+  virtual size_t expiredTaskCount() = 0;
 
   /**
    * Adds a task to be executed at some time in the future by a worker thread.
@@ -161,21 +161,21 @@ public:
    *
    * @throws TooManyPendingTasksException Pending task count exceeds max pending task count
    */
-  virtual void add(std::shared_ptr<Runnable> task,
+  virtual void add(stdcxx::shared_ptr<Runnable> task,
                    int64_t timeout = 0LL,
                    int64_t expiration = 0LL) = 0;
 
   /**
    * Removes a pending task
    */
-  virtual void remove(std::shared_ptr<Runnable> task) = 0;
+  virtual void remove(stdcxx::shared_ptr<Runnable> task) = 0;
 
   /**
    * Remove the next pending task which would be run.
    *
    * @return the task removed.
    */
-  virtual std::shared_ptr<Runnable> removeNextPending() = 0;
+  virtual stdcxx::shared_ptr<Runnable> removeNextPending() = 0;
 
   /**
    * Remove tasks from front of task queue that have expired.
@@ -190,14 +190,14 @@ public:
    */
   virtual void setExpireCallback(ExpireCallback expireCallback) = 0;
 
-  static std::shared_ptr<ThreadManager> newThreadManager();
+  static stdcxx::shared_ptr<ThreadManager> newThreadManager();
 
   /**
    * Creates a simple thread manager the uses count number of worker threads and has
    * a pendingTaskCountMax maximum pending tasks. The default, 0, specified no limit
    * on pending tasks
    */
-  static std::shared_ptr<ThreadManager> newSimpleThreadManager(size_t count = 4,
+  static stdcxx::shared_ptr<ThreadManager> newSimpleThreadManager(size_t count = 4,
                                                                  size_t pendingTaskCountMax = 0);
 
   class Task;

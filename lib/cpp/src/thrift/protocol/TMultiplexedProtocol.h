@@ -25,7 +25,7 @@
 namespace apache {
 namespace thrift {
 namespace protocol {
-using std::shared_ptr;
+using stdcxx::shared_ptr;
 
 /**
  * <code>TMultiplexedProtocol</code> is a protocol-independent concrete decorator
@@ -69,7 +69,7 @@ public:
    */
   TMultiplexedProtocol(shared_ptr<TProtocol> _protocol, const std::string& _serviceName)
     : TProtocolDecorator(_protocol), serviceName(_serviceName), separator(":") {}
-  ~TMultiplexedProtocol() override = default;
+  virtual ~TMultiplexedProtocol() {}
 
   /**
    * Prepends the service name to the function name, separated by TMultiplexedProtocol::SEPARATOR.
@@ -82,7 +82,7 @@ public:
    */
   uint32_t writeMessageBegin_virt(const std::string& _name,
                                   const TMessageType _type,
-                                  const int32_t _seqid) override;
+                                  const int32_t _seqid);
 
 private:
   const std::string serviceName;

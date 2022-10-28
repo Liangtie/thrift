@@ -28,7 +28,7 @@ namespace apache {
 namespace thrift {
 namespace transport {
 
-const char* TTransportException::what() const noexcept {
+const char* TTransportException::what() const throw() {
   if (message_.empty()) {
     switch (type_) {
     case UNKNOWN:

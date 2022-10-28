@@ -20,8 +20,7 @@
 #ifndef _THRIFT_ASYNC_TASYNCCHANNEL_H_
 #define _THRIFT_ASYNC_TASYNCCHANNEL_H_ 1
 
-#include <functional>
-#include <memory>
+#include <thrift/stdcxx.h>
 #include <thrift/Thrift.h>
 
 namespace apache {
@@ -39,9 +38,9 @@ using apache::thrift::transport::TMemoryBuffer;
 
 class TAsyncChannel {
 public:
-  typedef std::function<void()> VoidCallback;
+  typedef apache::thrift::stdcxx::function<void()> VoidCallback;
 
-  virtual ~TAsyncChannel() = default;
+  virtual ~TAsyncChannel() {}
 
   // is the channel in a good state?
   virtual bool good() const = 0;

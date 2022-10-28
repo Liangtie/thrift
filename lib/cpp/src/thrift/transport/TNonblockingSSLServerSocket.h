@@ -21,6 +21,7 @@
 #define _THRIFT_TRANSPORT_TNONBLOCKINGSSLSERVERSOCKET_H_ 1
 
 #include <thrift/transport/TNonblockingServerSocket.h>
+#include <thrift/stdcxx.h>
 
 namespace apache {
 namespace thrift {
@@ -39,7 +40,7 @@ public:
    * @param port    Listening port
    * @param factory SSL socket factory implementation
    */
-  TNonblockingSSLServerSocket(int port, std::shared_ptr<TSSLSocketFactory> factory);
+  TNonblockingSSLServerSocket(int port, stdcxx::shared_ptr<TSSLSocketFactory> factory);
 
   /**
    * Constructor.  Binds to the specified address.
@@ -50,7 +51,7 @@ public:
    */
   TNonblockingSSLServerSocket(const std::string& address,
                    int port,
-                   std::shared_ptr<TSSLSocketFactory> factory);
+                   stdcxx::shared_ptr<TSSLSocketFactory> factory);
 
   /**
    * Constructor.  Binds to all interfaces.
@@ -63,11 +64,11 @@ public:
   TNonblockingSSLServerSocket(int port,
                    int sendTimeout,
                    int recvTimeout,
-                   std::shared_ptr<TSSLSocketFactory> factory);
+                   stdcxx::shared_ptr<TSSLSocketFactory> factory);
 
 protected:
-  std::shared_ptr<TSocket> createSocket(THRIFT_SOCKET socket) override;
-  std::shared_ptr<TSSLSocketFactory> factory_;
+  stdcxx::shared_ptr<TSocket> createSocket(THRIFT_SOCKET socket);
+  stdcxx::shared_ptr<TSSLSocketFactory> factory_;
 };
 }
 }

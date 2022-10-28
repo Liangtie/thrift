@@ -23,7 +23,7 @@
 #include <queue>
 #include <string>
 #include <utility>
-#include <memory>
+#include <thrift/stdcxx.h>
 #include <thrift/async/TAsyncChannel.h>
 
 struct event_base;
@@ -52,24 +52,24 @@ public:
                        const char* address,
                        int port,
                        struct event_base* eb,
-                       struct evdns_base *dnsbase = nullptr);
-  ~TEvhttpClientChannel() override;
+                       struct evdns_base *dnsbase = 0);
+  ~TEvhttpClientChannel();
 
-  void sendAndRecvMessage(const VoidCallback& cob,
+  virtual void sendAndRecvMessage(const VoidCallback& cob,
                                   apache::thrift::transport::TMemoryBuffer* sendBuf,
-                                  apache::thrift::transport::TMemoryBuffer* recvBuf) override;
+                                  apache::thrift::transport::TMemoryBuffer* recvBuf);
 
-  void sendMessage(const VoidCallback& cob,
-                           apache::thrift::transport::TMemoryBuffer* message) override;
-  void recvMessage(const VoidCallback& cob,
-                           apache::thrift::transport::TMemoryBuffer* message) override;
+  virtual void sendMessage(const VoidCallback& cob,
+                           apache::thrift::transport::TMemoryBuffer* message);
+  virtual void recvMessage(const VoidCallback& cob,
+                           apache::thrift::transport::TMemoryBuffer* message);
 
   void finish(struct evhttp_request* req);
 
   // XXX
-  bool good() const override { return true; }
-  bool error() const override { return false; }
-  bool timedOut() const override { return false; }
+  virtual bool good() const { return true; }
+  virtual bool error() const { return false; }
+  virtual bool timedOut() const { return false; }
 
 private:
   static void response(struct evhttp_request* req, void* arg);

@@ -42,9 +42,7 @@ int thrift_fcntl(THRIFT_SOCKET fd, int cmd, int flags) {
   return res;
 }
 
-// #if WINVER <= 0x0502 // XP, Server2003
-#if 1 // XP, Server2003
-
+#if WINVER <= 0x0502 // XP, Server2003
 int thrift_poll(THRIFT_POLLFD* fdArray, ULONG nfds, INT timeout) {
   fd_set read_fds, write_fds;
   fd_set* read_fds_ptr = NULL;

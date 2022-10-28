@@ -26,6 +26,7 @@
 #include <openssl/ssl.h>
 #include <string>
 #include <thrift/concurrency/Mutex.h>
+#include <thrift/stdcxx.h>
 
 namespace apache {
 namespace thrift {
@@ -69,19 +70,19 @@ void cleanupOpenSSL();
  */
 class TSSLSocket : public TSocket {
 public:
-  ~TSSLSocket() override;
+  ~TSSLSocket();
   /**
    * TTransport interface.
    */
-  bool isOpen() const override;
-  bool peek() override;
-  void open() override;
-  void close() override;
-  bool hasPendingDataToRead() override;
-  uint32_t read(uint8_t* buf, uint32_t len) override;
-  void write(const uint8_t* buf, uint32_t len) override;
-  uint32_t write_partial(const uint8_t* buf, uint32_t len) override;
-  void flush() override;
+  bool isOpen();
+  bool peek();
+  void open();
+  void close();
+  bool hasPendingDataToRead();
+  uint32_t read(uint8_t* buf, uint32_t len);
+  void write(const uint8_t* buf, uint32_t len);
+  uint32_t write_partial(const uint8_t* buf, uint32_t len);
+  void flush();
   /**
   * Set whether to use client or server side SSL handshake protocol.
   *
@@ -97,7 +98,7 @@ public:
    *
    * @param manager  Instance of AccessManager
    */
-  virtual void access(std::shared_ptr<AccessManager> manager) { access_ = manager; }
+  virtual void access(stdcxx::shared_ptr<AccessManager> manager) { access_ = manager; }
   /**
    * Set eventSafe flag if libevent is used.
    */
@@ -111,37 +112,37 @@ protected:
   /**
    * Constructor.
    */
-  TSSLSocket(std::shared_ptr<SSLContext> ctx);
+  TSSLSocket(stdcxx::shared_ptr<SSLContext> ctx);
   /**
    * Constructor with an interrupt signal.
    */
-  TSSLSocket(std::shared_ptr<SSLContext> ctx, std::shared_ptr<THRIFT_SOCKET> interruptListener);
+  TSSLSocket(stdcxx::shared_ptr<SSLContext> ctx, stdcxx::shared_ptr<THRIFT_SOCKET> interruptListener);
   /**
    * Constructor, create an instance of TSSLSocket given an existing socket.
    *
    * @param socket An existing socket
    */
-  TSSLSocket(std::shared_ptr<SSLContext> ctx, THRIFT_SOCKET socket);
+  TSSLSocket(stdcxx::shared_ptr<SSLContext> ctx, THRIFT_SOCKET socket);
   /**
    * Constructor, create an instance of TSSLSocket given an existing socket that can be interrupted.
    *
    * @param socket An existing socket
    */
-  TSSLSocket(std::shared_ptr<SSLContext> ctx, THRIFT_SOCKET socket, std::shared_ptr<THRIFT_SOCKET> interruptListener);
+  TSSLSocket(stdcxx::shared_ptr<SSLContext> ctx, THRIFT_SOCKET socket, stdcxx::shared_ptr<THRIFT_SOCKET> interruptListener);
    /**
    * Constructor.
    *
    * @param host  Remote host name
    * @param port  Remote port number
    */
-  TSSLSocket(std::shared_ptr<SSLContext> ctx, std::string host, int port);
+  TSSLSocket(stdcxx::shared_ptr<SSLContext> ctx, std::string host, int port);
     /**
   * Constructor with an interrupt signal.
   *
   * @param host  Remote host name
   * @param port  Remote port number
   */
-    TSSLSocket(std::shared_ptr<SSLContext> ctx, std::string host, int port, std::shared_ptr<THRIFT_SOCKET> interruptListener);
+    TSSLSocket(stdcxx::shared_ptr<SSLContext> ctx, std::string host, int port, stdcxx::shared_ptr<THRIFT_SOCKET> interruptListener);
   /**
    * Authorize peer access after SSL handshake completes.
    */
@@ -170,8 +171,8 @@ protected:
 
   bool server_;
   SSL* ssl_;
-  std::shared_ptr<SSLContext> ctx_;
-  std::shared_ptr<AccessManager> access_;
+  stdcxx::shared_ptr<SSLContext> ctx_;
+  stdcxx::shared_ptr<AccessManager> access_;
   friend class TSSLSocketFactory;
 
 private:
@@ -211,37 +212,37 @@ public:
   /**
    * Create an instance of TSSLSocket with a fresh new socket.
    */
-  virtual std::shared_ptr<TSSLSocket> createSocket();
+  virtual stdcxx::shared_ptr<TSSLSocket> createSocket();
   /**
    * Create an instance of TSSLSocket with a fresh new socket, which is interruptable.
    */
-  virtual std::shared_ptr<TSSLSocket> createSocket(std::shared_ptr<THRIFT_SOCKET> interruptListener);
+  virtual stdcxx::shared_ptr<TSSLSocket> createSocket(stdcxx::shared_ptr<THRIFT_SOCKET> interruptListener);
   /**
    * Create an instance of TSSLSocket with the given socket.
    *
    * @param socket An existing socket.
    */
-  virtual std::shared_ptr<TSSLSocket> createSocket(THRIFT_SOCKET socket);
+  virtual stdcxx::shared_ptr<TSSLSocket> createSocket(THRIFT_SOCKET socket);
   /**
    * Create an instance of TSSLSocket with the given socket which is interruptable.
    *
    * @param socket An existing socket.
    */
-  virtual std::shared_ptr<TSSLSocket> createSocket(THRIFT_SOCKET socket, std::shared_ptr<THRIFT_SOCKET> interruptListener);
+  virtual stdcxx::shared_ptr<TSSLSocket> createSocket(THRIFT_SOCKET socket, stdcxx::shared_ptr<THRIFT_SOCKET> interruptListener);
   /**
   * Create an instance of TSSLSocket.
   *
   * @param host  Remote host to be connected to
   * @param port  Remote port to be connected to
   */
-  virtual std::shared_ptr<TSSLSocket> createSocket(const std::string& host, int port);
+  virtual stdcxx::shared_ptr<TSSLSocket> createSocket(const std::string& host, int port);
   /**
   * Create an instance of TSSLSocket.
   *
   * @param host  Remote host to be connected to
   * @param port  Remote port to be connected to
   */
-  virtual std::shared_ptr<TSSLSocket> createSocket(const std::string& host, int port, std::shared_ptr<THRIFT_SOCKET> interruptListener);
+  virtual stdcxx::shared_ptr<TSSLSocket> createSocket(const std::string& host, int port, stdcxx::shared_ptr<THRIFT_SOCKET> interruptListener);
   /**
    * Set ciphers to be used in SSL handshake process.
    *
@@ -273,7 +274,7 @@ public:
    *
    * @param path Path to trusted certificate file
    */
-  virtual void loadTrustedCertificates(const char* path, const char* capath = nullptr);
+  virtual void loadTrustedCertificates(const char* path, const char* capath = NULL);
   /**
    * Default randomize method.
    */
@@ -299,13 +300,13 @@ public:
    *
    * @param manager  The AccessManager instance
    */
-  virtual void access(std::shared_ptr<AccessManager> manager) { access_ = manager; }
+  virtual void access(stdcxx::shared_ptr<AccessManager> manager) { access_ = manager; }
   static void setManualOpenSSLInitialization(bool manualOpenSSLInitialization) {
     manualOpenSSLInitialization_ = manualOpenSSLInitialization;
   }
 
 protected:
-  std::shared_ptr<SSLContext> ctx_;
+  stdcxx::shared_ptr<SSLContext> ctx_;
 
   /**
    * Override this method for custom password callback. It may be called
@@ -318,11 +319,11 @@ protected:
 
 private:
   bool server_;
-  std::shared_ptr<AccessManager> access_;
+  stdcxx::shared_ptr<AccessManager> access_;
   static concurrency::Mutex mutex_;
   static uint64_t count_;
-  THRIFT_EXPORT static bool manualOpenSSLInitialization_;
-  void setup(std::shared_ptr<TSSLSocket> ssl);
+  static bool manualOpenSSLInitialization_;
+  void setup(stdcxx::shared_ptr<TSSLSocket> ssl);
   static int passwordCallback(char* password, int size, int, void* data);
 };
 
@@ -334,7 +335,7 @@ public:
   TSSLException(const std::string& message)
     : TTransportException(TTransportException::INTERNAL_ERROR, message) {}
 
-  const char* what() const noexcept override {
+  virtual const char* what() const throw() {
     if (message_.empty()) {
       return "TSSLException";
     } else {
@@ -373,7 +374,7 @@ public:
   /**
    * Destructor
    */
-  virtual ~AccessManager() = default;
+  virtual ~AccessManager() {}
   /**
    * Determine whether the peer should be granted access or not. It's called
    * once after the SSL handshake completes successfully, before peer certificate
@@ -385,7 +386,7 @@ public:
    * @param  sa Peer IP address
    * @return True if the peer is trusted, false otherwise
    */
-  virtual Decision verify(const sockaddr_storage& /* sa */) noexcept { return DENY; }
+  virtual Decision verify(const sockaddr_storage& /* sa */) throw() { return DENY; }
   /**
    * Determine whether the peer should be granted access or not. It's called
    * every time a DNS subjectAltName/common name is extracted from peer's
@@ -401,7 +402,7 @@ public:
    */
   virtual Decision verify(const std::string& /* host */,
                           const char* /* name */,
-                          int /* size */) noexcept {
+                          int /* size */) throw() {
     return DENY;
   }
   /**
@@ -415,7 +416,7 @@ public:
    */
   virtual Decision verify(const sockaddr_storage& /* sa */,
                           const char* /* data */,
-                          int /* size */) noexcept {
+                          int /* size */) throw() {
     return DENY;
   }
 };
@@ -425,9 +426,9 @@ typedef AccessManager::Decision Decision;
 class DefaultClientAccessManager : public AccessManager {
 public:
   // AccessManager interface
-  Decision verify(const sockaddr_storage& sa) noexcept override;
-  Decision verify(const std::string& host, const char* name, int size) noexcept override;
-  Decision verify(const sockaddr_storage& sa, const char* data, int size) noexcept override;
+  Decision verify(const sockaddr_storage& sa) throw();
+  Decision verify(const std::string& host, const char* name, int size) throw();
+  Decision verify(const sockaddr_storage& sa, const char* data, int size) throw();
 };
 }
 }

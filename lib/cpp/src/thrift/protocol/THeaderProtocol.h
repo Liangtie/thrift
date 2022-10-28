@@ -25,7 +25,7 @@
 #include <thrift/protocol/TVirtualProtocol.h>
 #include <thrift/transport/THeaderTransport.h>
 
-#include <memory>
+#include <thrift/stdcxx.h>
 
 using apache::thrift::transport::THeaderTransport;
 
@@ -43,27 +43,27 @@ protected:
 public:
   void resetProtocol();
 
-  explicit THeaderProtocol(const std::shared_ptr<TTransport>& trans,
+  explicit THeaderProtocol(const stdcxx::shared_ptr<TTransport>& trans,
                            uint16_t protoId = T_COMPACT_PROTOCOL)
-    : TVirtualProtocol<THeaderProtocol>(std::shared_ptr<TTransport>(new THeaderTransport(trans))),
-      trans_(std::dynamic_pointer_cast<THeaderTransport>(getTransport())),
+    : TVirtualProtocol<THeaderProtocol>(stdcxx::shared_ptr<TTransport>(new THeaderTransport(trans))),
+      trans_(stdcxx::dynamic_pointer_cast<THeaderTransport>(getTransport())),
       protoId_(protoId) {
     trans_->setProtocolId(protoId);
     resetProtocol();
   }
 
-  THeaderProtocol(const std::shared_ptr<TTransport>& inTrans,
-                  const std::shared_ptr<TTransport>& outTrans,
+  THeaderProtocol(const stdcxx::shared_ptr<TTransport>& inTrans,
+                  const stdcxx::shared_ptr<TTransport>& outTrans,
                   uint16_t protoId = T_COMPACT_PROTOCOL)
     : TVirtualProtocol<THeaderProtocol>(
-          std::shared_ptr<TTransport>(new THeaderTransport(inTrans, outTrans))),
-      trans_(std::dynamic_pointer_cast<THeaderTransport>(getTransport())),
+          stdcxx::shared_ptr<TTransport>(new THeaderTransport(inTrans, outTrans))),
+      trans_(stdcxx::dynamic_pointer_cast<THeaderTransport>(getTransport())),
       protoId_(protoId) {
     trans_->setProtocolId(protoId);
     resetProtocol();
   }
 
-  ~THeaderProtocol() override = default;
+  ~THeaderProtocol() {}
 
   /**
    * Functions to work with headers by calling into THeaderTransport
@@ -182,25 +182,25 @@ public:
   uint32_t readBinary(std::string& binary);
 
 protected:
-  std::shared_ptr<THeaderTransport> trans_;
+  stdcxx::shared_ptr<THeaderTransport> trans_;
 
-  std::shared_ptr<TProtocol> proto_;
+  stdcxx::shared_ptr<TProtocol> proto_;
   uint32_t protoId_;
 };
 
 class THeaderProtocolFactory : public TProtocolFactory {
 public:
-  std::shared_ptr<TProtocol> getProtocol(std::shared_ptr<transport::TTransport> trans) override {
-    auto* headerProtocol
+  virtual stdcxx::shared_ptr<TProtocol> getProtocol(stdcxx::shared_ptr<transport::TTransport> trans) {
+    THeaderProtocol* headerProtocol
         = new THeaderProtocol(trans, trans, T_BINARY_PROTOCOL);
-    return std::shared_ptr<TProtocol>(headerProtocol);
+    return stdcxx::shared_ptr<TProtocol>(headerProtocol);
   }
 
-  std::shared_ptr<TProtocol> getProtocol(
-      std::shared_ptr<transport::TTransport> inTrans,
-      std::shared_ptr<transport::TTransport> outTrans) override {
-    auto* headerProtocol = new THeaderProtocol(inTrans, outTrans, T_BINARY_PROTOCOL);
-    return std::shared_ptr<TProtocol>(headerProtocol);
+  virtual stdcxx::shared_ptr<TProtocol> getProtocol(
+      stdcxx::shared_ptr<transport::TTransport> inTrans,
+      stdcxx::shared_ptr<transport::TTransport> outTrans) {
+    THeaderProtocol* headerProtocol = new THeaderProtocol(inTrans, outTrans, T_BINARY_PROTOCOL);
+    return stdcxx::shared_ptr<TProtocol>(headerProtocol);
   }
 };
 }
